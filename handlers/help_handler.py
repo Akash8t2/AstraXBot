@@ -1,45 +1,47 @@
-from pyrogram import filters, Client
+# handlers/help_handler.py
+
+from pyrogram import Client, filters
 from pyrogram.types import Message
-from config import Config
 
 HELP_TEXT = """
-<b>✨ AstraXBot हेल्प मेन्यू:</b>
+**AstraXBot Commands:**
 
-<b>🛡️ एडमिन कमांड्स:</b>
-• /ban [user] - यूज़र को बैन करें
-• /unban [user] - यूज़र को अनबैन करें
-• /mute [user] - म्यूट करें
-• /unmute [user] - अनम्यूट करें
-• /kick [user] - ग्रुप से निकालें
-• /warn [user] - वार्न दें
-• /resetwarn [user] - वार्न हटाएं
-• /promote [user] - प्रमोट करें
-• /demote [user] - डिमोट करें
+**General:**
+/start - बॉट शुरू करें
+/help - सभी कमांड्स देखें
+/id - अपना या रिप्लाई किए गए यूजर का आईडी लें
 
-<b>👮‍♂️ ग्रुप टूल्स:</b>
-• /setwelcome [msg] - वेलकम मैसेज सेट करें
-• /cleanwelcome - वेलकम हटाएं
-• /mentionall - सभी को मेन्शन करें
-• /pin [reply] - मैसेज पिन करें
-• /unpin - पिन हटाएं
+**Group Management:**
+/promote - यूजर को एडमिन बनाएँ (रिप्लाई में)
+/demote - एडमिन हटाएँ
+/pin - मैसेज पिन करें (रिप्लाई में)
+/unpin - पिन हटाएँ
+/mute - यूजर को म्यूट करें
+/unmute - म्यूट हटाएँ
+/ban - यूजर को बैन करें
+/unban - बैन हटाएँ
+/warn - वार्न दें
+/warnings - वार्निंग्स देखें
+/resetwarns - वार्निंग्स रीसेट करें
 
-<b>🎉 फन और उपयोगी:</b>
-• /id - यूज़र और चैट आईडी
-• /info [reply/user] - यूज़र की जानकारी
-• /adminlist - एडमिन्स की लिस्ट
+**Utilities:**
+/setwelcome - वेलकम मैसेज सेट करें
+/getwelcome - वेलकम मैसेज देखें
+/delwelcome - वेलकम मैसेज हटाएँ
+/mentionall - सभी को टैग करें
 
-<b>📚 जानकारी:</b>
-• /start - बॉट शुरू करें
-• /help - यह हेल्प मेन्यू
-• /repo - बॉट का सोर्स कोड
+**Fun & Extra:**
+/repo - GitHub लिंक
+/stats - बॉट की स्थिति
 
-<b>सपोर्ट:</b>
-{support}
+Support: @BeatXFlowSupport  
+Updates: @BeatFlowCommunity
 """
 
-@Client.on_message(filters.command("help"))
-async def help_handler(client, message: Message):
-    await message.reply_text(
-        HELP_TEXT.format(support=Config.SUPPORT_GROUP),
-        disable_web_page_preview=True
-    )
+@Client.on_message(filters.command("help") & filters.private)
+async def help_private(client, message: Message):
+    await message.reply_text(HELP_TEXT, disable_web_page_preview=True)
+
+@Client.on_message(filters.command("help") & filters.group)
+async def help_group(client, message: Message):
+    await message.reply_text("**Help के लिए मुझे प्राइवेट में यूज़ करें।**\n/start दबाएँ: @botcasx", quote=True)
